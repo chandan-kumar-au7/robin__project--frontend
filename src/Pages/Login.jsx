@@ -3,8 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { userLoginFuncFromUserAction } from "../redux/actions/userAction";
-import { userLoginErrorAction } from "../redux/actions/errorAction";
 import { userLoginAction } from "../redux/actions/userAction";
+import { userLoginErrorAction } from "../redux/actions/errorAction";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -36,10 +36,10 @@ const Login = () => {
         dispatch(userLoginAction({}));
       }
       dispatch(userLoginFuncFromUserAction({ email, password }, history));
+      dispatch({
+        type: "SET_HAVE_TO_DSPLAY_NOTIFIER",
+      });
       // console.log(userLoginDatafromstore);
-      // if () {
-
-      // }
     }
   };
 
@@ -53,7 +53,7 @@ const Login = () => {
           {/* <!-- /.login-logo --> */}
           <div className='card'>
             <div className='card-body login-card-body'>
-              <p className='login-box-msg'>Sign in to start your session</p>
+              <p className='login-box-msg'>*NOTE : All filds are mandatory</p>
 
               <form onSubmit={formSubmitHandler}>
                 <div className='input-group mb-3'>
@@ -103,20 +103,7 @@ const Login = () => {
                 </div>
                 {/* <!-- /.col --> */}
               </form>
-              {Object.keys(errordatafromstore.loginErrors).length === 0 ? (
-                <></>
-              ) : (
-                <h6 style={{ color: "red" }}>
-                  {JSON.stringify(errordatafromstore.loginErrors.error)}
-                </h6>
-              )}
-              {Object.keys(userLoginDatafromstore.user).length === 0 ? (
-                <></>
-              ) : (
-                <h6 style={{ color: "red" }}>
-                  {JSON.stringify(userLoginDatafromstore.user.success)}
-                </h6>
-              )}
+
               <div className='social-auth-links text-center mb-3'>
                 <p>- OR -</p>
                 <Link to='#!' className='btn btn-block btn-primary'>
@@ -130,7 +117,7 @@ const Login = () => {
               {/* <!-- /.social-auth-links --> */}
 
               <p className='mb-1'>
-                <Link to='/users/forgotpass'>I forgot my password</Link>
+                <Link to='/forgot'>I forgot my password</Link>
               </p>
               <p className='mb-0'>
                 <Link to='/register' className='text-center'>
