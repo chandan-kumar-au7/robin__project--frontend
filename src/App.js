@@ -7,6 +7,7 @@ import jwt_decode from "jwt-decode";
 import setAuthToken from "./redux/helper/setAuthToken";
 
 import { setUserLoggedIn, userLogout } from "./redux/actions/userAction";
+import { setadminLoggedIn, adminLogout } from "./redux/actions/adminAction";
 
 import store from "./redux/store";
 
@@ -17,9 +18,11 @@ import Forgot from "./Pages/Forgot";
 import NavBar from "./Pages/NavBar";
 import Error from "./Pages/Error";
 import Footer from "./Pages/Footer";
-import Invest from "./Pages/Invest"
+import Invest from "./Pages/Invest";
 import Notifier from "./components/Notificiation/Notifier";
 import { css } from "@emotion/core";
+
+import Getloan from "./components/User/Getloan/Getloan";
 
 // =============== Spinner ============ //
 // Can be a string as well. Need to ensure each key-value pair ends with ;
@@ -44,6 +47,18 @@ if (window.localStorage.userJwtToken) {
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
     store.dispatch(userLogout());
+    window.location.href = "/";
+  }
+} else if (window.localStorage.adminJwtToken) {
+  setAuthToken(localStorage.adminJwtToken);
+  const decoded = jwt_decode(localStorage.adminJwtToken);
+
+  store.dispatch(setadminLoggedIn(decoded));
+
+  // Check for expired token
+  const currentTime = Date.now() / 1000;
+  if (decoded.exp < currentTime) {
+    store.dispatch(adminLogout());
     window.location.href = "/";
   }
 }
@@ -71,6 +86,7 @@ function App() {
           <Route exact path='/register' component={Register} />
           <Route exact path='/forgot' component={Forgot} />
           <Route exact path='/Invest' component={Invest} />
+          <Route exact path='/getloan' component={Getloan} />
           <Route to='/error' component={Error} />
 
           <Redirect to='/error' />
