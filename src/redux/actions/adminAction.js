@@ -14,14 +14,14 @@ export const adminRegisterAction = (data) => {
 // =========== It will be imported inside the { PAGES folder } where ever we will be needing {  admin LOGIN [ BACKEND ] DATA } =========//
 export const adminLoginAction = (data) => {
   return {
-    type: "LOGIN_DATA_INTO_REDUX_STORE",
+    type: "ADMIN_LOGGED_IN_DATA_INTO_REDUX_STORE",
     payload: data,
   };
 };
 // =========== It will be imported inside the { PAGES folder } where ever we will be needing {  admin LOGIN [ BACKEND ] DATA } =========//
 export const adminLoginForMessageAction = (data) => {
   return {
-    type: "ADMIN_LOGIN_DATA_INTO_REDUX_STORE",
+    type: "ADMIN_LOGIN_SUCCESS_DATA_INTO_REDUX_STORE",
     payload: data,
   };
 };
@@ -37,6 +37,13 @@ const adminLogoutAction = (data) => {
 export const adminAssignSecretTokenAction = (data) => {
   return {
     type: "ADMIN_SECRETTOKEN_ASSIGN_DATA_INTO_REDUX_STORE",
+    payload: data,
+  };
+};
+// =========== It will be imported inside the { PAGES folder } where ever we will be needing {  admin adminAssignSecretToken [ BACKEND ] DATA } =========//
+export const adminAlreadyVarifiedAction = (data) => {
+  return {
+    type: "ADMIN_ALREADY_VARIFIED_ASSIGN_DATA_INTO_REDUX_STORE",
     payload: data,
   };
 };
@@ -78,9 +85,9 @@ export const adminRegisterFuncFromadminAction = (
     try {
       const { data } = await axios({
         method: "Post",
-        url: "http://localhost:5000/admins/register",
-        // url:
-        //   "https://robin--project-mern-backend.herokuapp.com/admins/register",
+        // url: "http://localhost:5000/admins/register",
+        url:
+          "https://robin--project-mern-backend.herokuapp.com/admins/register",
         data: adminRegisterCredentials,
       });
       // console.log("data from admin action FILE : ", data);
@@ -92,19 +99,30 @@ export const adminRegisterFuncFromadminAction = (
         });
 
         history.push("/login");
+
+        setTimeout(() => {
+          dispatch(adminRegisterAction({}));
+        }, 6000);
       } else {
         dispatch({
-          type: "SET_REGISTER_ERRORS",
+          type: "SET_ADMIN_REGISTER_ERRORS",
           payload: data,
         });
         dispatch({
           type: "HAVE_TO_STOP_SPINNER",
         });
+
+        setTimeout(() => {
+          dispatch({
+            type: "SET_ADMIN_REGISTER_ERRORS",
+            payload: {},
+          });
+        }, 6000);
       }
     } catch (err) {
       // console.log("from catch block of admin func register");
       dispatch({
-        type: "SET_REGISTER_ERRORS",
+        type: "SET_ADMIN_REGISTER_ERRORS",
         payload: err.message,
       });
       // console.log("Error in adminRegister Action file ", err.message);
@@ -122,20 +140,28 @@ export const adminAssignSecretTokenFuncFromadminAction = (email) => {
         //   "https://robin--project-mern-backend.herokuapp.com/admins/assignsecrettoken",
         data: email,
       });
-      console.log("assigned secretToken : ", data);
+      // console.log("assigned secretToken from AdminAction FILE :::: : ", data);
       if (data.success) {
-        dispatch(adminLoginForMessageAction(data));
+        // console.log("success part run : ");
         dispatch({
           type: "HAVE_TO_STOP_SPINNER",
         });
+        dispatch(adminAlreadyVarifiedAction(data));
+        setTimeout(() => {
+          dispatch(adminAlreadyVarifiedAction({}));
+        }, 6000);
       } else {
-        console.log(" from else block assigned secretToken : ", data);
+        // console.log(" from else block assigned secretToken : ", data);
         if (data.EMAILSENDsuccess) {
-          console.log(" else than if block assigned secretToken : ", data);
+          // console.log(" else than if block assigned secretToken : ", data);
           dispatch(adminAssignSecretTokenAction(data));
           dispatch({
             type: "HAVE_TO_STOP_SPINNER",
           });
+
+          setTimeout(() => {
+            dispatch(adminAssignSecretTokenAction({}));
+          }, 6000);
         } else {
           dispatch({
             type: "SET_ADMIN_EMAIL_SENDING_ERRORS",
@@ -145,6 +171,13 @@ export const adminAssignSecretTokenFuncFromadminAction = (email) => {
           dispatch({
             type: "HAVE_TO_STOP_SPINNER",
           });
+
+          setTimeout(() => {
+            dispatch({
+              type: "SET_ADMIN_EMAIL_SENDING_ERRORS",
+              payload: {},
+            });
+          }, 6000);
         }
       }
     } catch (err) {
@@ -170,9 +203,9 @@ export const adminSecretTokenVarifyFuncFromAdminAction = (
     try {
       const { data } = await axios({
         method: "Post",
-        url: "http://localhost:5000/admins/varifytoken",
-        // url:
-        //   "https://robin--project-mern-backend.herokuapp.com/admins/varifytoken",
+        // url: "http://localhost:5000/admins/varifytoken",
+        url:
+          "https://robin--project-mern-backend.herokuapp.com/admins/varifytoken",
         data: Email_And_SecretToken,
       });
       console.log("OTPVarify data from user action FILE : ", data);
@@ -213,13 +246,13 @@ export const adminLoginFuncFromadminAction = (
     try {
       const { data } = await axios({
         method: "Post",
-        url: "http://localhost:5000/admins/login",
-        // url: "https://robin--project-mern-backend.herokuapp.com/admins/login",
+        // url: "http://localhost:5000/admins/login",
+        url: "https://robin--project-mern-backend.herokuapp.com/admins/login",
         data: adminLoginCredentials,
       });
       console.log("data from admin action FILE : ", data);
       if (data.success) {
-        dispatch(adminLoginForMessageAction(data));
+        // dispatch(adminLoginForMessageAction(data));
         dispatch({
           type: "HAVE_TO_STOP_SPINNER",
         });
@@ -235,7 +268,9 @@ export const adminLoginFuncFromadminAction = (
 
         history.push("/");
 
-        setTimeout(() => {}, 6000);
+        setTimeout(() => {
+          dispatch(adminLoginForMessageAction({}));
+        }, 6000);
       } else {
         dispatch({
           type: "HAVE_TO_STOP_SPINNER",
